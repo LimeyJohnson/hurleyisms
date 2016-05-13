@@ -36,7 +36,7 @@
         </script>
         <meta name="google-site-verification" content="WV0F3nMCKGZPDN5wN3waLLMZXu7oumPBl0p9C2_shCs" />
     </head>
-    <body ng-app="hurleyisms">
+    <body>
 
         <!-- SPLASH -->
         <section class="splash active">
@@ -96,7 +96,7 @@
         </section>
 
         <!-- LINE -->
-        <section class="lines" ng-controller="MainController">
+        <section class="lines">
             <header class="lines__header">
                 <a href="#" class="close">X</a>
                 <div class="lines__header__title no-mobile">
@@ -105,11 +105,11 @@
                 </div>
                 <div class="lines__header__dummy no-mobile"></div>
             </header>
-            <main id="lines" ng-repeat="line in Lines" >
+            <main id="lines">
                 <div class="line">
-                    <p class="line__text"> {{ line.line }}</p>
+                    <p class="line__text"></p>
                     <footer class="line__footer">
-                        <p class="line__byline">by <span class="author"> {{ line.author }}</span></p>
+                        <p class="line__byline">by <span class="author"></span></p>
                         <!--<div class="line__vote-buttons">
                             <a href="#" class="btn thumbs-up">Thumbs up</a>
                             <a href="#" class="btn thumbs-down">Thumbs down</a>
