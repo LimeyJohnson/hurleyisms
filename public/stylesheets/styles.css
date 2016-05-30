@@ -69,8 +69,8 @@ a:focus {
 /*****************************************
 				MODULES
 *****************************************/
-section {
-  display: none; }
+/*section {
+  display: none; }*/
   section.active {
     display: block; }
 
