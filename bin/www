@@ -24,6 +24,7 @@ app.set('port', port);
 
 if(process.env.NODE_ENV === 'development'){
 	console.log("SSL server [DEVELOPMENT]");
+	var sslPort = 3001
 	var options = {
   
 		key: fs.readFileSync('server.key'),
@@ -33,9 +34,10 @@ if(process.env.NODE_ENV === 'development'){
 	}
 
 	var httpsserver = https.createServer(options,app);
-	httpsserver.listen(3001);
+	httpsserver.listen(sslPort);
 	httpsserver.on('error', onError);
 	httpsserver.on('listening', onListening);
+	console.log("Starting SSL Server on port "+ sslPort)
 }
 console.log("Starting non SSL Server on port "+port);
 //console.log("Non SSL server [PRODUCTION] ");
@@ -45,7 +47,6 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-console.log("Starting non SSL Server on port "+port);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

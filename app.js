@@ -1,7 +1,7 @@
 /// <reference path="public/javascripts/pro.js" />
-if(!process.env.NODE_ENV){
+if (!process.env.NODE_ENV) {
     console.log("loading .env");
-require('dotenv').config();
+    require('dotenv').config();
 }
 var express = require('express');
 var path = require('path');
@@ -27,44 +27,45 @@ var helpers = require('./routes/helpers')
 
 var filterLog = function (req) {
     return req.originalUrl.startsWith("/images")
-          || req.originalUrl.startsWith("/javascripts")
-          || req.originalUrl.startsWith("/stylesheets")
+        || req.originalUrl.startsWith("/javascripts")
+        || req.originalUrl.startsWith("/stylesheets")
 }
 //Logging Information
 var winston = require('winston');
-require('winston-loggly-bulk');
+var { Loggly } = require('winston-loggly-bulk');
 expressWinston = require('express-winston');
-winston.add(winston.transports.Loggly, {
+winston.add(new Loggly({
     token: "87424c34-9a93-4eeb-b10b-a23adb4e8e6e",
     subdomain: "LimeyJohnson",
     tags: [process.env.WINSTON_TAG],
     json: true
-});
+}));
 
 app.use(expressWinston.logger({
     transports: [
-     new winston.transports.Console({
-         json: true,
-         colorize: true
-     }),
-     new winston.transports.Loggly({
-         subdomain: 'limeyjohnson',
-         inputToken: '87424c34-9a93-4eeb-b10b-a23adb4e8e6e',
-         json: true,
-         tags: [process.env.WINSTON_TAG]
-     })
+        new winston.transports.Console({
+            json: true,
+            colorize: true
+        }),
+        new winston.transports.Loggly({
+            subdomain: 'limeyjohnson',
+            inputToken: '87424c34-9a93-4eeb-b10b-a23adb4e8e6e',
+            json: true,
+            tags: [process.env.WINSTON_TAG]
+        })
     ],
     meta: true, // optional: control whether you want to log the meta data about the request (default to true) 
     msg: "HTTP StatusCode={{res.statusCode}} Method={{req.method}} {{res.responseTime}}ms URL={{req.url}} LoggedIn={{req.payload != null}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}" 
     expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true 
     colorize: true, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red). 
     ignoreRoute: function (req, res) { return filterLog(req); }, // optional: allows to skip some log messages based on request and/or response 
-    dynamicMeta: function (req,res) { 
-        if(req.user) {
-            return {user: req.user.email, pro:req.user.pro, loggedin:true, type:req.user.type}} 
-            return {loggedin:false}
-        },
-    requestFilter: function (req, propName) { if(propName === "headers") {return undefined;} return req[propName]  } 
+    dynamicMeta: function (req, res) {
+        if (req.user) {
+            return { user: req.user.email, pro: req.user.pro, loggedin: true, type: req.user.type }
+        }
+        return { loggedin: false }
+    },
+    requestFilter: function (req, propName) { if (propName === "headers") { return undefined; } return req[propName] }
 }));
 
 
@@ -73,20 +74,23 @@ var forceHttps = function (req, res, next) {
     if (req.secure || req.headers['x-forwarded-proto'] === 'https' || req.headers['x-arr-ssl']) {
         next();
     } else {
-        console.log('Request made over HTTP, redirecting to HTTPS '+req.hostname);
-        
+        console.log('Request made over HTTP, redirecting to HTTPS ' + req.hostname);
+
         res.redirect('https://' + req.hostname);
     }
 };
-app.use(forceHttps);
+if (!process.env.NODE_ENV === 'development') {
+    console.log("forcing https")
+    app.use(forceHttps);
+}
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 //Only log error responses
 app.use(logger('combined', {
     skip: function (req, res) {
         return req.originalUrl.startsWith("/images")
-       || req.originalUrl.startsWith("/javascripts")
-       || req.originalUrl.startsWith("/stylesheets")
+            || req.originalUrl.startsWith("/javascripts")
+            || req.originalUrl.startsWith("/stylesheets")
     }
 }));
 app.use(bodyParser.json());
@@ -128,7 +132,7 @@ app.use(function (req, res, next) {
 
 // development error handler
 // will print stacktrace
-if(process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
     app.use(function (err, req, res, next) {
         console.error(err);
         res.status(err.status || 500)
