@@ -79,10 +79,7 @@ var forceHttps = function (req, res, next) {
         res.redirect('https://' + req.hostname);
     }
 };
-if (!process.env.NODE_ENV === 'development') {
-    console.log("forcing https")
-    app.use(forceHttps);
-}
+app.use(forceHttps);
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 //Only log error responses
